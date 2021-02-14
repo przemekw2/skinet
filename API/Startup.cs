@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using API.Errors;
 using API.Extensions;
 using StackExchange.Redis;
+using Infrastructure.Identity;
 
 namespace API
 {
@@ -41,8 +42,14 @@ namespace API
                     .GetConnectionString("Redis"), true);
                 return ConnectionMultiplexer.Connect(configuration);
             });
+            
+            services.AddDbContext<AppIdentityDbContext>(x => 
+            {
+                x.UseSqlite(_config.GetConnectionString("IdentityConnection"));
+            });
 
             services.AddApplicationServices();
+            services.AddIdentityServices(_config);
             services.AddSwaggerDocumentation();
             services.AddCors(opt => 
             {
@@ -70,6 +77,7 @@ namespace API
             app.UseRouting();
             app.UseStaticFiles();
             app.UseCors("CorsPolicy");
+            app.UseAuthentication();
             app.UseAuthorization();
             app.UseSwaggerDocumention();
             app.UseEndpoints(endpoints =>
