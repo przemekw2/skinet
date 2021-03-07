@@ -16,3 +16,10 @@ import { IProduct } from "./product";
     productType: string;
     productBrand: string;
   }
+
+  export class Pagination implements IPagination {
+    pageIndex: number;
+    pageSize: number;
+    count: number;
+    data: IProduct[] = [];
+}
